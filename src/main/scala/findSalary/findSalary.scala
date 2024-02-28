@@ -37,15 +37,15 @@ object findSalary {
           }
       }
     val filtered = data.filter { r =>
-      r >= 300
+      r < 300
     }
     filtered.reduce { (a, b) =>
       val sum = a + b
       sum
     }
 
-    filtered.collectWithId.foreach(println)
-    filtered.saveAsTextFile("src/output/findSalary/programOutput")
+    filtered.collect.foreach(println)
+    filtered.saveAsTextFile("src/correctOutput/findSalary/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -55,7 +55,7 @@ object findSalary {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this input")
-    linRdd.show(true).saveAsTextFile("src/output/findSalary/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/findSalary/titianOutput")
 
     sc.stop()
   }

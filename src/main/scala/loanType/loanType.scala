@@ -42,7 +42,7 @@ object loanType {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/output/loanType/programOutput")
+    mapped2.saveAsTextFile("src/correctOutput/loanType/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -52,13 +52,13 @@ object loanType {
     //track all input
     linRdd = linRdd.goBackAll()
     println("This is lineage of the input")
-    linRdd.show(true).saveAsTextFile("src/output/loanType/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/loanType/titianOutput")
 
     sc.stop()
   }
 
   def failure(years: Int): Boolean ={
-    years > 30
+    years <= 30
   }
 
 }

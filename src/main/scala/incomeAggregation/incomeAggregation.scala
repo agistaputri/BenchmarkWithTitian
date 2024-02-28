@@ -1,6 +1,5 @@
 package incomeAggregation
 
-import insideCircle.insideCircle
 import org.apache.spark.lineage.LineageContext
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -32,7 +31,7 @@ object incomeAggregation {
         cols =>
           (cols(0), cols(1).toInt, cols(2).toInt)
       }.filter { s =>
-      s._1 == "90024"
+      s._1 != "90024"
     }.map {
       s =>
         if (s._2 >= 40 & s._2 <= 65) {
@@ -50,7 +49,7 @@ object incomeAggregation {
       .take(100).foreach(println)
 
     data.collect.foreach(println)
-    data.saveAsTextFile("src/output/incomeAggregation/programOutput")
+    data.saveAsTextFile("src/correctOutput/incomeAggregation/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -60,7 +59,7 @@ object incomeAggregation {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/output/incomeAggregation/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/incomeAggregation/titianOutput")
 
     sc.stop()
   }

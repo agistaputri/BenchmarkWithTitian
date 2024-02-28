@@ -43,7 +43,7 @@ object movieRating {
 
     println("This is mapped")
     mapped.collect.foreach(println)
-    mapped.saveAsTextFile("src/output/movieRating/programOutput")
+    mapped.saveAsTextFile("src/correctOutput/movieRating/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -53,13 +53,13 @@ object movieRating {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/output/movieRating/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/movieRating/titianOutput")
 
     sc.stop()
   }
 
   def failure(rating: Int): Boolean = {
-    rating < 4
+    rating >= 4
   }
 
   def sum(a: Any, b: Any): Int = {

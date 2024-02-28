@@ -40,7 +40,7 @@ object wordCount {
       .foreach(println)
 
     pairs.collectWithId().foreach(println)
-    pairs.saveAsTextFile("src/output/wordCount/programOutput")
+    pairs.saveAsTextFile("src/correctOutput/wordCount/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -49,12 +49,12 @@ object wordCount {
 
     //for tracking all input
     linRdd = linRdd.goBackAll()
-    linRdd.show(true).saveAsTextFile("src/output/wordCount/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/wordCount/titianOutput")
 
     sc.stop()
   }
 
   def wrongWord(word: String): Boolean = {
-    word == "sentence"
+    word != "sentence"
   }
 }

@@ -53,11 +53,11 @@ object customers {
       }
       .filter{
         s=>
-          s._1 == "520"
+          s._1 != "520"
       }
 
     o.collect.foreach(println)
-    o.saveAsTextFile("src/output/customers/programOutput")
+    o.saveAsTextFile("src/correctOutput/customers/programOutput")
 
     val c = customers
       .map {
@@ -77,14 +77,14 @@ object customers {
     val grouped = joined.groupByKey()
     val numpur = grouped.mapValues { iter => iter.size }
     val thresh = numpur.filter(arg1 => arg1._2 >= 3)
-    //    val top = thresh.sortBy(_._2, ascending = false).take(3)
-    //    if (top.length < 3) {
-    //      println("not enough data")
-    //    }
-    //    else {
-    //      val rewards = top.map { case (id, num) => (id, 100.0f, s"$id has won ${"$"}100.0f") }
-    //      rewards.foreach(println)
-    //    }
+//        val top = thresh.sortBy(_._2, ascending = false).take(3)
+//        if (top.length < 3) {
+//          println("not enough data")
+//        }
+//        else {
+//          val rewards = top.map { case (id, num) => (id, 100.0f, s"$id has won ${"$"}100.0f") }
+//          rewards.foreach(println)
+//        }
 
     lc.setCaptureLineage(false)
     //data lineage
@@ -93,7 +93,7 @@ object customers {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of wrong input")
-    linRdd.show.saveAsTextFile("src/output/customers/titianOutput")
+    linRdd.show.saveAsTextFile("src/correctOutput/customers/titianOutput")
 
   }
 

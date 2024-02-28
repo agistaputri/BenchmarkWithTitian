@@ -51,7 +51,7 @@ object ageAnalysis {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/output/AgeAnalysis/programOutput")
+    mapped2.saveAsTextFile("src/correctOutput/AgeAnalysis/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -61,13 +61,13 @@ object ageAnalysis {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show.saveAsTextFile("src/output/AgeAnalysis/titianOutput")
+    linRdd.show.saveAsTextFile("src/correctOutput/AgeAnalysis/titianOutput")
 
     sc.stop()
   }
 
   def failure(age: Int): Boolean = {
-    age > 110
+    age <= 110
   }
 
 }

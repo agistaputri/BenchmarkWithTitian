@@ -46,7 +46,7 @@ object commuteType {
       .foreach(println)
 
     types.collect.foreach(println)
-    types.saveAsTextFile("src/output/commuteType/programOutput")
+    types.saveAsTextFile("src/correctOutput/commuteType/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -56,12 +56,12 @@ object commuteType {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of the input")
-    linRdd.show.saveAsTextFile("src/output/commuteType/titianOutput")
+    linRdd.show.saveAsTextFile("src/correctOutput/commuteType/titianOutput")
 
     sc.stop()
   }
 
   def failure(speed: Int): Boolean = {
-    speed > 100
+    speed <= 100
   }
 }

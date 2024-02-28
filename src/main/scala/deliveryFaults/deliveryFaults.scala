@@ -47,7 +47,7 @@ object deliveryFaults {
 //      .foreach(println)
 
     deliveries.collect.foreach(println)
-    deliveries.saveAsTextFile("src/output/deliveryFaults/programOutput")
+    deliveries.saveAsTextFile("src/correctOutput/deliveryFaults/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -57,7 +57,7 @@ object deliveryFaults {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/output/deliveryFaults/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/deliveryFaults/titianOutput")
 
     sc.stop()
   }
@@ -70,7 +70,7 @@ object deliveryFaults {
   }
 
   def failure (rating: Int): Boolean = {
-    rating > 5
+    rating <= 5
   }
 
 }

@@ -51,14 +51,14 @@ object numberSeries {
       (l, dis)
     }.filter({
       case (l, m) =>
-        m.!=(25)
+        m.==(25)
 
     })
 
 
     println("This is mapped")
     mapped.collect.foreach(println)
-    mapped.saveAsTextFile("src/output/numberSeries/programOutput")
+    mapped.saveAsTextFile("src/correctOutput/numberSeries/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -68,7 +68,7 @@ object numberSeries {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this wrong input")
-    linRdd.show(true).saveAsTextFile("src/output/numberSeries/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/numberSeries/titianOutput")
 
     sc.stop()
   }

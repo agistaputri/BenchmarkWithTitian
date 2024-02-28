@@ -58,7 +58,7 @@ object commuteTypeFull {
       .reduceByKey(add)
 
     locations.collect().foreach(println)
-    locations.saveAsTextFile("src/output/commuteTypeFull/programOutput")
+    locations.saveAsTextFile("src/correctOutput/commuteTypeFull/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -68,13 +68,13 @@ object commuteTypeFull {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of the input")
-    linRdd.show.saveAsTextFile("src/output/commuteTypeFull/titianOutput")
+    linRdd.show.saveAsTextFile("src/correctOutput/commuteTypeFull/titianOutput")
 
     sc.stop()
   }
 
   def wrongInput(location: String): Boolean = {
-    location == "Carolina"
+    location != "Carolina"
   }
 
   def add(a: Int, b: Int): Int = {

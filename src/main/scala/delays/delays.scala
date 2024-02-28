@@ -47,7 +47,7 @@ object delays {
 
 
     station1.collect.foreach(println)
-    station1.saveAsTextFile("src/output/delays/programOutput")
+    station1.saveAsTextFile("src/correctOutput/delays/programOutput")
 
 //    station2.collect.foreach(println)
 
@@ -61,7 +61,7 @@ object delays {
     //track all wrong input in station 1
     linRdd = linRdd.goBackAll()
     println("This is lineage of input on station 1")
-    linRdd.show(true).saveAsTextFile("src/output/delays/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/delays/titianOutput")
 
 //    track all wrong input in station 2
 
@@ -80,7 +80,7 @@ object delays {
   }
 
   def failure (a: Int, d: Int): Boolean = {
-    a < d
+    a > d
   }
 
 }

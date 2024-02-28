@@ -37,13 +37,13 @@ object externalCall {
     mapped.reduceByKey((a, b) => a + b)
       .filter { v =>
         val v1 = log10(v._2)
-        v1 <= 1
+        v1 > 1
       }
 
 
     println("This is mapped")
     mapped.collect.foreach(println)
-    mapped.saveAsTextFile("src/output/externalCall/programOutput")
+    mapped.saveAsTextFile("src/correctOutput/externalCall/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -53,7 +53,7 @@ object externalCall {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of wrong input")
-    linRdd.show(true).saveAsTextFile("src/output/externalCall/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/externalCall/titianOutput")
 
     sc.stop()
   }

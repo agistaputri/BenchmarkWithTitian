@@ -47,7 +47,7 @@ object studentGrade {
 
     println("This is mapped")
     rdd.collect.foreach(println)
-    rdd.saveAsTextFile("src/output/studentGrade/programOutput")
+    rdd.saveAsTextFile("src/correctOutput/studentGrade/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -57,12 +57,12 @@ object studentGrade {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this wrong input")
-    linRdd.show(true).saveAsTextFile("src/output/studentGrade/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/studentGrade/titianOutput")
 
     sc.stop()
   }
 
   def failure(grade: Int): Boolean = {
-    grade > 100
+    grade <= 100
   }
 }

@@ -46,7 +46,7 @@ object flightDistance {
       }
 
       airports_and_coords.collect.foreach(println)
-      airports_and_coords.saveAsTextFile("src/output/flightDistance/programOutput")
+      airports_and_coords.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
 
       lc.setCaptureLineage(false)
       //data lineage
@@ -55,7 +55,7 @@ object flightDistance {
       //track all wrong input
       linRdd = linRdd.goBackAll()
       println("This is lineage of this input")
-      linRdd.show(true).saveAsTextFile("src/output/flightDistance/titianOutput")
+      linRdd.show(true).saveAsTextFile("src/correctOutput/flightDistance/titianOutput")
 
     }
     catch {
@@ -84,7 +84,7 @@ object flightDistance {
   }
 
   def wrongInput(airport: String): Boolean = {
-    airport == "LAS"
+    airport != "LAS"
   }
 
 }

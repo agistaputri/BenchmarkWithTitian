@@ -39,7 +39,7 @@ object insideCircle {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/output/insideCircle/programOutput")
+    mapped2.saveAsTextFile("src/correctOutput/insideCircle/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -49,12 +49,12 @@ object insideCircle {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/output/insideCircle/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/insideCircle/titianOutput")
 
     sc.stop()
   }
 
   def failure(x: Int, y: Int, z: Int): Boolean = {
-    x * x + y * y >= z * z
+    x * x + y * y < z * z
   }
 }
