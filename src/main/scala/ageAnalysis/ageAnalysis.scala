@@ -30,10 +30,10 @@ object ageAnalysis {
     val mapped = ages.map {
       cols => (cols(0), cols(1).toInt, cols(2).toInt)
     }
-    val filtered = mapped.filter { s =>
-      s._1 == "90024"
-    }
-    val mapped2 = filtered.filter(s => ageAnalysis.failure(s._2))
+//    val filtered = mapped.filter { s =>
+//      s._1 == "90024"
+//    }
+    val mapped2 = mapped.filter(s => ageAnalysis.failure(s._2))
     .map {
       s =>
         if (s._2 >= 40 & s._2 <= 65) {
@@ -51,7 +51,7 @@ object ageAnalysis {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/correctOutput/AgeAnalysis/programOutput")
+    mapped2.saveAsTextFile("src/output/AgeAnalysis/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -61,13 +61,13 @@ object ageAnalysis {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show.saveAsTextFile("src/correctOutput/AgeAnalysis/titianOutput")
+    linRdd.show.saveAsTextFile("src/output/AgeAnalysis/titianOutput")
 
     sc.stop()
   }
 
   def failure(age: Int): Boolean = {
-    age <= 110
+    age > 110
   }
 
 }
