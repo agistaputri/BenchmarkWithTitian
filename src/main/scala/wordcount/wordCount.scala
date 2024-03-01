@@ -39,7 +39,7 @@ object wordCount {
       .take(10)
       .foreach(println)
 
-    pairs.collectWithId().foreach(println)
+    pairs.collect.foreach(println)
     pairs.saveAsTextFile("src/correctOutput/wordCount/programOutput")
 
     lc.setCaptureLineage(false)
