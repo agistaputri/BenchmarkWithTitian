@@ -5,64 +5,58 @@ import org.apache.spark.{SparkConf, SparkContext}
 object flightDistance {
 
   def main(args: Array[String]): Unit = {
-    try {
-      //set up spark configuration
-      println(s"FlightDistance:\n${args.mkString("\n")}")
-      val sparkConf = new SparkConf().setMaster(if (args.length > 2) args(2) else "local[*]")
-      sparkConf.setAppName("Column Provenance Test").set("spark.executor.memory", "2g")
-      val flights_data = "src/resources/flightDistance/flight"
-      val airports_data = "src/resources/flightDistance/airports"
-      val ctx = SparkContext.getOrCreate(sparkConf) //set up lineage context and start capture lineage
-      ctx.setLogLevel("ERROR")
+    //set up spark configuration
+    val sparkConf = new SparkConf().setMaster(if (args.length > 2) args(2) else "local[*]")
+    sparkConf.setAppName("Column Provenance Test").set("spark.executor.memory", "2g")
+    val flights_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
+    val airports_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
+    val ctx = SparkContext.getOrCreate(sparkConf) //set up lineage context and start capture lineage
+    ctx.setLogLevel("ERROR")
 
-      val lc = new LineageContext(ctx)
-      lc.setCaptureLineage(true)
+    val lc = new LineageContext(ctx)
+    lc.setCaptureLineage(true)
 
-      val flights = lc.textFile(flights_data).map(_.split(','))
-      // === Sample ===
-      //    flight_id,flight_no,scheduled_departure,scheduled_arrival,departure_airport,arrival_airport,status,aircraft_code,actual_departure,actual_arrival
-      //    1185,PG0134,"2017-09-10 02:50:00.000","2017-09-10 07:55:00.000",DME,BTK,Scheduled,319,,
-      // ==============
-      val airports = lc.textFile(airports_data).map(_.split(','))
-      // === Sample ===
-      //    airport_code,airport_name,city,coordinates_lat,coordinates_long,timezone
-      //    YKS,"Yakutsk Airport",Yakutsk,129.77099609375,62.0932998657227,Asia/Yakutsk
-      // ==============
-      //  ---------------------------------------------------------------------------------------
+    val flights = lc.textFile(flights_data).map(_.split(','))
+    // === Sample ===
+    //    flight_id,flight_no,scheduled_departure,scheduled_arrival,departure_airport,arrival_airport,status,aircraft_code,actual_departure,actual_arrival
+    //    1185,PG0134,"2017-09-10 02:50:00.000","2017-09-10 07:55:00.000",DME,BTK,Scheduled,319,,
+    // ==============
+    val airports = lc.textFile(airports_data).map(_.split(','))
+    // === Sample ===
+    //    airport_code,airport_name,city,coordinates_lat,coordinates_long,timezone
+    //    YKS,"Yakutsk Airport",Yakutsk,129.77099609375,62.0932998657227,Asia/Yakutsk
+    // ==============
+    //  ---------------------------------------------------------------------------------------
 
-      val departure_flights = flights.map(r => (r(4), r(0))) // (DME, 1185)
-      val arrival_flights = flights.map(r => (r(5), r(0))) // (BTK, 1185)
-      val airports_and_coords = airports.map(r => (r(0), (r(3), r(4)))).filter(s => flightDistance.wrongInput(s._1)) // (YKS, (129.777, 62.093))
-      val dairports_and_coords = departure_flights.join(airports_and_coords) // (DME,(1185,(37.9062995910645,55.4087982177734)))
-      val aairports_and_coords = arrival_flights.join(airports_and_coords) // (NSK,(1546,(87.3321990966797,69.3110961914062)))
+    val departure_flights = flights.map(r => (r(4), r(0))).filter(s => flightDistance.wrongInput(s._1)) // (DME, 1185)
+    val arrival_flights = flights.map(r => (r(5), r(0))) // (BTK, 1185)
+//    val airports_and_coords = airports.map(r => (r(0), (r(3), r(4))))//.filter(s => flightDistance.wrongInput(s._1)) // (YKS, (129.777, 62.093))
+//    val dairports_and_coords = departure_flights.join(airports_and_coords) // (DME,(1185,(37.9062995910645,55.4087982177734)))
+//    val aairports_and_coords = arrival_flights.join(airports_and_coords) // (NSK,(1546,(87.3321990966797,69.3110961914062)))
+//
+//    val dflights_and_coords = dairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
+//    val aflights_and_coords = aairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
+//    val flights_and_coords = dflights_and_coords.join(aflights_and_coords) //(25604,((ULV,48.2266998291,54.2682991028),(DME,37.9062995910645,55.4087982177734)))
+//
+//    val flights_and_distances = flights_and_coords.map {
+//      case (fid, ((dap, dlat, dlong), (aap, alat, along))) =>
+//        (fid, (dap, aap, distance((dlat.toFloat, dlong.toFloat), (alat.toFloat, along.toFloat))))
+//    }
 
-      val dflights_and_coords = dairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
-      val aflights_and_coords = aairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
-      val flights_and_coords = dflights_and_coords.join(aflights_and_coords) //(25604,((ULV,48.2266998291,54.2682991028),(DME,37.9062995910645,55.4087982177734)))
+//    airports_and_coords.collect.foreach(println)
+//    airports_and_coords.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
 
-      val flights_and_distances = flights_and_coords.map {
-        case (fid, ((dap, dlat, dlong), (aap, alat, along))) =>
-          (fid, (dap, aap, distance((dlat.toFloat, dlong.toFloat), (alat.toFloat, along.toFloat))))
-      }
+    departure_flights.collect.foreach(println)
+    departure_flights.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
 
-      airports_and_coords.collect.foreach(println)
-      airports_and_coords.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
+    lc.setCaptureLineage(false)
+    //data lineage
+    var linRdd = departure_flights.getLineage()
 
-      lc.setCaptureLineage(false)
-      //data lineage
-      var linRdd = airports_and_coords.getLineage()
-
-      //track all wrong input
-      linRdd = linRdd.goBackAll()
-      println("This is lineage of this input")
-      linRdd.show(true).saveAsTextFile("src/correctOutput/flightDistance/titianOutput")
-
-    }
-    catch {
-      case e =>
-        println(s"FlightDistance exception: $e")
-        sys.exit(1)
-    }
+    //track all wrong input
+    linRdd = linRdd.goBackAll()
+    println("This is lineage of this input")
+    linRdd.show(true).saveAsTextFile("src/correctOutput/flightDistance/titianOutput")
   }
 
   def distance(departure: (Float, Float), arrival: (Float, Float)): Float = {

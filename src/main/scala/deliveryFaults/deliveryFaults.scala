@@ -9,7 +9,7 @@ object deliveryFaults {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataDeliveryFaults"
+      logFile = "src/NewIncorrect/DeliveryFaults/new_incorrect_dataset_32.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -47,7 +47,7 @@ object deliveryFaults {
 //      .foreach(println)
 
     deliveries.collect.foreach(println)
-    deliveries.saveAsTextFile("src/correctOutput/deliveryFaults/programOutput")
+    //deliveries.saveAsTextFile("src/NewIncorrect/DeliveryFaults/new_incorrect_dataset_1.csv")
 
     lc.setCaptureLineage(false)
 
@@ -57,7 +57,7 @@ object deliveryFaults {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/deliveryFaults/titianOutput")
+    linRdd.show(true).saveAsTextFile("src/measurement/DeliveryFault/dataset_32")
 
     sc.stop()
   }
@@ -70,7 +70,7 @@ object deliveryFaults {
   }
 
   def failure (rating: Int): Boolean = {
-    rating <= 5
+    rating > 5
   }
 
 }

@@ -8,7 +8,7 @@ object commuteType {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataCommuteType"
+      logFile = "src/NewIncorrect/commuteType/new_incorrect_dataset_32.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -46,7 +46,7 @@ object commuteType {
       .foreach(println)
 
     types.collect.foreach(println)
-    types.saveAsTextFile("src/correctOutput/commuteType/programOutput")
+    //types.saveAsTextFile("src/correctOutput/commuteType/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -56,12 +56,12 @@ object commuteType {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of the input")
-    linRdd.show.saveAsTextFile("src/correctOutput/commuteType/titianOutput")
+    linRdd.show.saveAsTextFile("src/measurement/CommuteType/dataset_32")
 
     sc.stop()
   }
 
   def failure(speed: Int): Boolean = {
-    speed <= 100
+    speed > 100
   }
 }

@@ -8,7 +8,7 @@ object ageAnalysis {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataAgeAnalysis"
+      logFile = "src/NewIncorrect/AgeAnalysis/new_incorrect_dataset_32.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -51,7 +51,7 @@ object ageAnalysis {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/correctOutput/AgeAnalysis/programOutput")
+    //mapped2.saveAsTextFile("src/measurement/AgeAnalysis/dataset_1")
 
     lc.setCaptureLineage(false)
 
@@ -61,13 +61,13 @@ object ageAnalysis {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show.saveAsTextFile("src/correctOutput/AgeAnalysis/titianOutput")
+    linRdd.show.saveAsTextFile("src/measurement/AgeAnalysis/dataset_32")
 
     sc.stop()
   }
 
   def failure(age: Int): Boolean = {
-    age <= 110
+    age > 110
   }
 
 }

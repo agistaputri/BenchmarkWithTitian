@@ -34,31 +34,31 @@ object commuteTypeFull {
 
     val locations = lc.textFile(logFile2).map(s => s.filter(_ != '\"').split(","))
       .map { cols =>
-        (cols(0), cols(3))
+        (cols(0).toInt, cols(3))
       }
       .filter {
-      s => commuteTypeFull.wrongInput(s._2)
+      s => commuteTypeFull.wrongInput(s._1)
     }
 
-    val joined = trips.join(locations)
-    val mapped = joined
-      .map { s =>
-        // Checking if speed is < 25mi/hr
-        val speed = s._2._1
-        if (speed > 40) {
-          ("car", speed)
-        } else if (speed > 15) {
-          ("public", speed)
-        } else {
-          ("onfoot", speed)
-        }
-      }
+//    val joined = trips.join(locations)
+//    val mapped = joined
+//      .map { s =>
+//        // Checking if speed is < 25mi/hr
+//        val speed = s._2._1
+//        if (speed > 40) {
+//          ("car", speed)
+//        } else if (speed > 15) {
+//          ("public", speed)
+//        } else {
+//          ("onfoot", speed)
+//        }
+//      }
 
-    val rbk = mapped
-      .reduceByKey(add)
+//    val rbk = mapped
+//      .reduceByKey(add)
 
     locations.collect().foreach(println)
-    locations.saveAsTextFile("src/correctOutput/commuteTypeFull/programOutput")
+    locations.saveAsTextFile("src/output/commuteTypeFull/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -68,13 +68,14 @@ object commuteTypeFull {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of the input")
-    linRdd.show.saveAsTextFile("src/correctOutput/commuteTypeFull/titianOutput")
+    linRdd.show
+      .saveAsTextFile("src/output/commuteTypeFull/titianOutput")
 
     sc.stop()
   }
 
-  def wrongInput(location: String): Boolean = {
-    location != "Carolina"
+  def wrongInput(id: Int): Boolean = {
+    id <= 1000
   }
 
   def add(a: Int, b: Int): Int = {

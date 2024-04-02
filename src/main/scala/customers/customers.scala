@@ -28,14 +28,14 @@ object customers {
 
     val customers = lc.textFile(customers_data).map(_.split(","))
     val orders = lc.textFile(orders_data).map(_.split(","))
-//      .map {
-//        cols =>
-//          (cols(0), cols(1), cols(2).toInt, cols(3))
-//      }
-//      .filter{
-//        s =>
-//          s._3 < 1234
-//      }
+      .map {
+        cols =>
+          (cols(0), cols(1), cols(2).toInt, cols(3))
+      }
+      .filter{
+        s =>
+          s._3 < 1234
+      }
 
 
     //  ---------------------------------------------------------------------------------------
@@ -47,17 +47,17 @@ object customers {
     //  OrderID	CustomerID	OrderDate
     //  10308,2,1996-09-18
 
-    val o = orders
-      .map {
-        case Array(_, cid, date, iid) => (cid, (iid, date.toInt))
-      }
-      .filter{
-        s=>
-          s._1 != "520"
-      }
+//    val o = orders
+//      .map {
+//        case Array(_, cid, date, iid) => (cid, (iid, date.toInt))
+//      }
+//      .filter{
+//        s=>
+//          s._1 != "520"
+//      }
 
-    o.collect.foreach(println)
-    o.saveAsTextFile("src/correctOutput/customers/programOutput")
+    orders.collect.foreach(println)
+    //o.saveAsTextFile("src/correctOutput/customers/programOutput")
 
     val c = customers
       .map {
@@ -65,18 +65,18 @@ object customers {
           (row(0), row(1))
       }
 
-    val joined = c.join(o)
-      .filter { case (_, (_, (_, date))) =>
-        val this_year = 1641013200
-        if (date > this_year)
-          true
-        else
-          false
-      }
+//    val joined = c.join(o)
+//      .filter { case (_, (_, (_, date))) =>
+//        val this_year = 1641013200
+//        if (date > this_year)
+//          true
+//        else
+//          false
+//      }
 
-    val grouped = joined.groupByKey()
-    val numpur = grouped.mapValues { iter => iter.size }
-    val thresh = numpur.filter(arg1 => arg1._2 >= 3)
+//    val grouped = joined.groupByKey()
+//    val numpur = grouped.mapValues { iter => iter.size }
+//    val thresh = numpur.filter(arg1 => arg1._2 >= 3)
 //        val top = thresh.sortBy(_._2, ascending = false).take(3)
 //        if (top.length < 3) {
 //          println("not enough data")
@@ -88,12 +88,13 @@ object customers {
 
     lc.setCaptureLineage(false)
     //data lineage
-    var linRdd = o.getLineage()
+    var linRdd = orders.getLineage()
 
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of wrong input")
-    linRdd.show.saveAsTextFile("src/correctOutput/customers/titianOutput")
+    linRdd.show(true)
+    // .saveAsTextFile("src/correctOutput/customers/titianOutput")
 
   }
 
