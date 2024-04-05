@@ -15,6 +15,7 @@ object customers {
     Random.setSeed(seed)
 
     val sparkConf = new SparkConf()
+    //val datasets = "src/resources/customers"
     val datasets = Array(
       ("ds1", "src/resources/customers/customers"),
       ("ds2", "src/resources/customers/orders")

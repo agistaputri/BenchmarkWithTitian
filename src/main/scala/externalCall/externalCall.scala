@@ -43,7 +43,7 @@ object externalCall {
 
     println("This is mapped")
     mapped.collect.foreach(println)
-    mapped.saveAsTextFile("src/correctOutput/externalCall/programOutput")
+    //mapped.saveAsTextFile("src/correctOutput/externalCall/programOutput")
 
     lc.setCaptureLineage(false)
 
@@ -53,7 +53,8 @@ object externalCall {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of wrong input")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/externalCall/titianOutput")
+    linRdd.show(true)
+      //.saveAsTextFile("src/correctOutput/externalCall/titianOutput")
 
     sc.stop()
   }

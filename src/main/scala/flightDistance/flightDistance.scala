@@ -6,14 +6,13 @@ object flightDistance {
 
   def main(args: Array[String]): Unit = {
     //set up spark configuration
-    val sparkConf = new SparkConf().setMaster(if (args.length > 2) args(2) else "local[*]")
-    sparkConf.setAppName("Column Provenance Test").set("spark.executor.memory", "2g")
+    val sparkConf = new SparkConf().setMaster(if (args.length > 2) args(1) else "local[1]")
+    sparkConf.setAppName("flightDistance").set("spark.executor.memory", "2g")
     val flights_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
     val airports_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
-    val ctx = SparkContext.getOrCreate(sparkConf) //set up lineage context and start capture lineage
-    ctx.setLogLevel("ERROR")
+    val sc = SparkContext.getOrCreate(sparkConf) //set up lineage context and start capture lineage
 
-    val lc = new LineageContext(ctx)
+    val lc = new LineageContext(sc)
     lc.setCaptureLineage(true)
 
     val flights = lc.textFile(flights_data).map(_.split(','))
@@ -28,35 +27,35 @@ object flightDistance {
     // ==============
     //  ---------------------------------------------------------------------------------------
 
-    val departure_flights = flights.map(r => (r(4), r(0))).filter(s => flightDistance.wrongInput(s._1)) // (DME, 1185)
+    val departure_flights = flights.map(r => (r(4), r(0))) // (DME, 1185)
     val arrival_flights = flights.map(r => (r(5), r(0))) // (BTK, 1185)
-//    val airports_and_coords = airports.map(r => (r(0), (r(3), r(4))))//.filter(s => flightDistance.wrongInput(s._1)) // (YKS, (129.777, 62.093))
-//    val dairports_and_coords = departure_flights.join(airports_and_coords) // (DME,(1185,(37.9062995910645,55.4087982177734)))
-//    val aairports_and_coords = arrival_flights.join(airports_and_coords) // (NSK,(1546,(87.3321990966797,69.3110961914062)))
-//
-//    val dflights_and_coords = dairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
-//    val aflights_and_coords = aairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
-//    val flights_and_coords = dflights_and_coords.join(aflights_and_coords) //(25604,((ULV,48.2266998291,54.2682991028),(DME,37.9062995910645,55.4087982177734)))
-//
-//    val flights_and_distances = flights_and_coords.map {
-//      case (fid, ((dap, dlat, dlong), (aap, alat, along))) =>
-//        (fid, (dap, aap, distance((dlat.toFloat, dlong.toFloat), (alat.toFloat, along.toFloat))))
-//    }
+    val airports_and_coords = airports.map(r => (r(0), (r(3), r(4))))
+      .filter(s => flightDistance.wrongInput(s._1)) // (YKS, (129.777, 62.093))
+    val dairports_and_coords = departure_flights.join(airports_and_coords) // (DME,(1185,(37.9062995910645,55.4087982177734)))
+    val aairports_and_coords = arrival_flights.join(airports_and_coords) // (NSK,(1546,(87.3321990966797,69.3110961914062)))
 
-//    airports_and_coords.collect.foreach(println)
-//    airports_and_coords.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
+    val dflights_and_coords = dairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
+    val aflights_and_coords = aairports_and_coords.map { case (ap, (id, (lat, long))) => (id, (ap, lat, long)) } //(12032,(KZN,49.278701782227,55.606201171875))
+    val flights_and_coords = dflights_and_coords.join(aflights_and_coords) //(25604,((ULV,48.2266998291,54.2682991028),(DME,37.9062995910645,55.4087982177734)))
 
-    departure_flights.collect.foreach(println)
-    departure_flights.saveAsTextFile("src/correctOutput/flightDistance/programOutput")
+    val flights_and_distances = flights_and_coords.map {
+      case (fid, ((dap, dlat, dlong), (aap, alat, along))) =>
+        (fid, (dap, aap, distance((dlat.toFloat, dlong.toFloat), (alat.toFloat, along.toFloat))))
+    }
+
+    airports_and_coords.collect.foreach(println)
+    airports_and_coords.saveAsTextFile("src/output/flightDistance/programOutput")
+
 
     lc.setCaptureLineage(false)
     //data lineage
-    var linRdd = departure_flights.getLineage()
+    var linRdd = airports_and_coords.getLineage()
 
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this input")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/flightDistance/titianOutput")
+    linRdd.show(true)
+      .saveAsTextFile("src/output/flightDistance/titianOutput")
   }
 
   def distance(departure: (Float, Float), arrival: (Float, Float)): Float = {
@@ -77,8 +76,8 @@ object flightDistance {
     (d * math.Pi / 180.0).toFloat
   }
 
-  def wrongInput(airport: String): Boolean = {
-    airport != "LAS"
+  def wrongInput(airports : String): Boolean = {
+    airports == "LAS" || airports == "LAX"
   }
 
 }

@@ -61,13 +61,13 @@ object ageAnalysis {
     //track all wrong input
     linRdd = linRdd.goBackAll()
     println("This is lineage of this mapped2")
-    linRdd.show.saveAsTextFile("src/measurement/AgeAnalysis/dataset_32")
+//    linRdd.show.saveAsTextFile("src/AgeAnalysis")
 
     sc.stop()
   }
 
   def failure(age: Int): Boolean = {
-    age > 110
+    age > 50
   }
 
 }
