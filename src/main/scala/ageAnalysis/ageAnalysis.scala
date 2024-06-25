@@ -8,7 +8,7 @@ object ageAnalysis {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/NewIncorrect/AgeAnalysis/new_incorrect_dataset_32.csv"
+      logFile = "src/IncorrectFromModel/AgeAnalysis/new_incorrect_dataset_47.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -56,11 +56,11 @@ object ageAnalysis {
     lc.setCaptureLineage(false)
 
     //data lineage
-    var linRdd = mapped2.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this mapped2")
+//    var linRdd = mapped2.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this mapped2")
 //    linRdd.show.saveAsTextFile("src/AgeAnalysis")
 
     sc.stop()

@@ -9,7 +9,7 @@ object findSalary {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataFindSalary"
+      logFile = "src/IncorrectFromModel/FindSalary/new_incorrect_dataset_4999.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -31,31 +31,31 @@ object findSalary {
       .map {
         line =>
           if (line.substring(0, 1).equals("$")) {
-            line.substring(1, 6).toInt
+            line.substring(1, 5).toInt
           } else {
             line.toInt
           }
       }
     val filtered = data.filter { r =>
-      r < 300
+      r >= 300
     }
-    filtered.reduce { (a, b) =>
-      val sum = a + b
-      sum
-    }
+//    filtered.reduce { (a, b) =>
+//      val sum = a + b
+//      sum
+//    }
 
     filtered.collect.foreach(println)
-    filtered.saveAsTextFile("src/correctOutput/findSalary/programOutput")
+    //filtered.saveAsTextFile("src/correctOutput/findSalary/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = filtered.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this input")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/findSalary/titianOutput")
+//    //data lineage
+//    var linRdd = filtered.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this input")
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/findSalary/titianOutput")
 
     sc.stop()
   }

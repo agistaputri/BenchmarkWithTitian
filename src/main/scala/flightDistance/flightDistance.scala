@@ -9,7 +9,7 @@ object flightDistance {
     val sparkConf = new SparkConf().setMaster(if (args.length > 2) args(1) else "local[1]")
     sparkConf.setAppName("flightDistance").set("spark.executor.memory", "2g")
     val flights_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
-    val airports_data = "D:/ACE/BenchmarkWithTitian/src/resources/flightDistance/airports"
+    val airports_data = "src/IncorrectFromModel/FlightDistance/new_incorrect_dataset_113.csv"
     val sc = SparkContext.getOrCreate(sparkConf) //set up lineage context and start capture lineage
 
     val lc = new LineageContext(sc)
@@ -44,18 +44,18 @@ object flightDistance {
     }
 
     airports_and_coords.collect.foreach(println)
-    airports_and_coords.saveAsTextFile("src/output/flightDistance/programOutput")
+    //airports_and_coords.saveAsTextFile("src/output/flightDistance/programOutput")
 
 
     lc.setCaptureLineage(false)
-    //data lineage
-    var linRdd = airports_and_coords.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this input")
-    linRdd.show(true)
-      .saveAsTextFile("src/output/flightDistance/titianOutput")
+//    //data lineage
+//    var linRdd = airports_and_coords.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this input")
+//    linRdd.show(true)
+//      .saveAsTextFile("src/output/flightDistance/titianOutput")
   }
 
   def distance(departure: (Float, Float), arrival: (Float, Float)): Float = {

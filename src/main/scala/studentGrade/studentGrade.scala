@@ -9,7 +9,7 @@ object studentGrade {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataStudentGrade"
+      logFile = "src/IncorrectFromModel/StudentGrade/new_incorrect_dataset_4475.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -40,29 +40,29 @@ object studentGrade {
       .map { case (a, b) => (a, b) }
 
 
-    rdd.reduceByKey((a, b) => a + b)
-      .take(100)
-      .foreach(println)
+//    rdd.reduceByKey((a, b) => a + b)
+//      .take(100)
+//      .foreach(println)
 
 
     println("This is mapped")
     rdd.collect.foreach(println)
-    rdd.saveAsTextFile("src/correctOutput/studentGrade/programOutput")
+    //rdd.saveAsTextFile("src/correctOutput/studentGrade/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = rdd.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this wrong input")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/studentGrade/titianOutput")
+//    //data lineage
+//    var linRdd = rdd.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this wrong input")
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/studentGrade/titianOutput")
 
     sc.stop()
   }
 
   def failure(grade: Int): Boolean = {
-    grade <= 100
+    grade > 100
   }
 }

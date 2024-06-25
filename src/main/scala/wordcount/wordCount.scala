@@ -10,7 +10,7 @@ object wordCount {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataWordCount"
+      logFile = "src/IncorrectFromModel/WordCount/new_incorrect_dataset_5000.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -40,21 +40,21 @@ object wordCount {
       .foreach(println)
 
     pairs.collect.foreach(println)
-    pairs.saveAsTextFile("src/correctOutput/wordCount/programOutput")
+    //pairs.saveAsTextFile("src/correctOutput/wordCount/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = pairs.getLineage()
-
-    //for tracking all input
-    linRdd = linRdd.goBackAll()
-    linRdd.show(true).saveAsTextFile("src/correctOutput/wordCount/titianOutput")
+//    //data lineage
+//    var linRdd = pairs.getLineage()
+//
+//    //for tracking all input
+//    linRdd = linRdd.goBackAll()
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/wordCount/titianOutput")
 
     sc.stop()
   }
 
   def wrongWord(word: String): Boolean = {
-    word != "sentence"
+    word == "sentence"
   }
 }

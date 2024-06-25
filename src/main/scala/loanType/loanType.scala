@@ -8,7 +8,7 @@ object loanType {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataLoanType"
+      logFile = "src/IncorrectFromModel/LoanType/new_incorrect_dataset_2373.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -42,23 +42,23 @@ object loanType {
 
     println("This is mapped")
     mapped2.collect.foreach(println)
-    mapped2.saveAsTextFile("src/correctOutput/loanType/programOutput")
+    //mapped2.saveAsTextFile("src/correctOutput/loanType/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = mapped2.getLineage()
-
-    //track all input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of the input")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/loanType/titianOutput")
+//    //data lineage
+//    var linRdd = mapped2.getLineage()
+//
+//    //track all input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of the input")
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/loanType/titianOutput")
 
     sc.stop()
   }
 
   def failure(years: Int): Boolean ={
-    years <= 30
+    years > 30
   }
 
 }

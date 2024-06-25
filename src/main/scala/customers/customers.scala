@@ -10,7 +10,7 @@ object customers {
     var orders_data = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
       customers_data = "src/resources/customers/customers"
-      orders_data = "src/resources/customers/orders"
+      orders_data = "src/IncorrectFromModel/Customers/new_incorrect_dataset_522.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -49,15 +49,15 @@ object customers {
 
     val o = orders
       .map {
-        case Array(_, cid, date, iid) => (cid, (iid, date.toInt))
+        case Array(_, cid, date, iid) => (cid, (iid, date.toDouble))
       }
       .filter{
         s=>
-          s._1.toInt < 100
+          s._1.toLong < 100
       }
 
     o.collect.foreach(println)
-    o.saveAsTextFile("src/output/customers/programOutput")
+    //o.saveAsTextFile("src/output/customers/programOutput")
 
     val c = customers
       .map {
@@ -87,13 +87,13 @@ object customers {
 //        }
 
     lc.setCaptureLineage(false)
-    //data lineage
-    var linRdd = o.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of wrong input")
-    linRdd.show(true).saveAsTextFile("src/output/customers/titianOutput")
+//    //data lineage
+//    var linRdd = o.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of wrong input")
+//    linRdd.show(true).saveAsTextFile("src/output/customers/titianOutput")
 
   }
 

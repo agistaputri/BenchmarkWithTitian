@@ -9,7 +9,7 @@ object incomeAggregation {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataIncomeAggregation"
+      logFile = "src/IncorrectFromModel/IncomeAggregation/new_incorrect_dataset_49.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -31,7 +31,7 @@ object incomeAggregation {
         cols =>
           (cols(0), cols(1).toInt, cols(2).toInt)
       }.filter { s =>
-      s._1 != "90024"
+      s._1 == "90024"
     }.map {
       s =>
         if (s._2 >= 40 & s._2 <= 65) {
@@ -49,17 +49,17 @@ object incomeAggregation {
       .take(100).foreach(println)
 
     data.collect.foreach(println)
-    data.saveAsTextFile("src/correctOutput/incomeAggregation/programOutput")
+    //data.saveAsTextFile("src/correctOutput/incomeAggregation/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = data.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/incomeAggregation/titianOutput")
+//    //data lineage
+//    var linRdd = data.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this mapped2")
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/incomeAggregation/titianOutput")
 
     sc.stop()
   }

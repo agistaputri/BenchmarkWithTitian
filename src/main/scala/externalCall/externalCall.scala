@@ -11,7 +11,7 @@ object externalCall {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataExternalCall"
+      logFile = "src/IncorrectFromModel/ExternalCall/new_incorrect_dataset_200.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -37,7 +37,7 @@ object externalCall {
     mapped.reduceByKey((a, b) => a + b)
       .filter { v =>
         val v1 = log10(v._2)
-        v1 > 1
+        v1 <= 1
       }
 
 
@@ -47,14 +47,14 @@ object externalCall {
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = mapped.getLineage()
+//    //data lineage
+//    var linRdd = mapped.getLineage()
 
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of wrong input")
-    linRdd.show(true)
-      //.saveAsTextFile("src/correctOutput/externalCall/titianOutput")
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of wrong input")
+//    linRdd.show(true)
+//      //.saveAsTextFile("src/correctOutput/externalCall/titianOutput")
 
     sc.stop()
   }

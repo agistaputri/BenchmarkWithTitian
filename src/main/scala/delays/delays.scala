@@ -5,7 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object delays {
   def main(args: Array[String]) {
-    val conf = new SparkConf().setMaster(if (args.length > 2) args(2) else "local[*]")
+    val conf = new SparkConf().setMaster(if (args.length > 2) args(2) else "local[1]")
     conf.setAppName("Bus Delays")
     val sc = SparkContext.getOrCreate(conf)
     val lc = new LineageContext(sc)
@@ -13,9 +13,9 @@ object delays {
     lc.setCaptureLineage(true)
 
     //<id>,<departure_time>,<advertised_departure>
-    val station1 = lc.textFile("src/NewIncorrect/Delays/new_incorrect_dataset_32.csv")
+    val station1 = lc.textFile("src/IncorrectFromModel/Delays/new_incorrect_dataset_1254.csv")
       .map(_.split(','))
-      .filter(r => delays.failure(r(1).toInt, r(2).toInt))
+      .filter(r => delays.failure(r(1).toDouble, r(2).toDouble))
       .map(r => (r(0), (r(1), r(2), r(3))))
 
 
@@ -54,14 +54,14 @@ object delays {
     lc.setCaptureLineage(false)
 
     //data lineage
-    var linRdd = station1.getLineage()
+//    var linRdd = station1.getLineage()
 
 //    var linRdd2 = station2.getLineage()
 
     //track all wrong input in station 1
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of input on station 1")
-    linRdd.show(true).saveAsTextFile("src/measurement/Delays/dataset_32")
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of input on station 1")
+//    linRdd.show(true).saveAsTextFile("src/measurement/Delays/dataset_32")
 
 //    track all wrong input in station 2
 
@@ -79,7 +79,7 @@ object delays {
     v / 1800 // groups of 30 min delays
   }
 
-  def failure (a: Int, d: Int): Boolean = {
+  def failure (a: Double, d: Double): Boolean = {
     a < d
   }
 

@@ -9,7 +9,7 @@ object deliveryFaults {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/NewIncorrect/DeliveryFaults/new_incorrect_dataset_32.csv"
+      logFile = "src/IncorrectFromModel/DeliveryFaults/new_incorrect_dataset_780.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -52,12 +52,12 @@ object deliveryFaults {
     lc.setCaptureLineage(false)
 
     //data lineage
-    var linRdd = deliveries.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/measurement/DeliveryFault/dataset_32")
+//    var linRdd = deliveries.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this mapped2")
+//    linRdd.show(true).saveAsTextFile("src/measurement/DeliveryFault/dataset_32")
 
     sc.stop()
   }

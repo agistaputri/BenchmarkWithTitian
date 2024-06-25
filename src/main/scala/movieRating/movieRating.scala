@@ -9,7 +9,7 @@ object movieRating {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/resources/dataMovieRating"
+      logFile = "src/IncorrectFromModel/MovieRating/new_incorrect_dataset_220.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -36,30 +36,30 @@ object movieRating {
     }.filter(s => movieRating.failure(s._2))
       .map { case (a, b) => (a, b.asInstanceOf[Any]) } // Temporary fix
 
-    mapped.reduceByKey(sum)
-      .take(100)
-      .foreach(println)
+//    mapped.reduceByKey(sum)
+//      .take(100)
+//      .foreach(println)
 
 
     println("This is mapped")
     mapped.collect.foreach(println)
-    mapped.saveAsTextFile("src/correctOutput/movieRating/programOutput")
+    //mapped.saveAsTextFile("src/correctOutput/movieRating/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = mapped.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of this mapped2")
-    linRdd.show(true).saveAsTextFile("src/correctOutput/movieRating/titianOutput")
+//    //data lineage
+//    var linRdd = mapped.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of this mapped2")
+//    linRdd.show(true).saveAsTextFile("src/correctOutput/movieRating/titianOutput")
 
     sc.stop()
   }
 
   def failure(rating: Int): Boolean = {
-    rating >= 4
+    rating <= 4
   }
 
   def sum(a: Any, b: Any): Int = {

@@ -8,7 +8,7 @@ object commuteType {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/NewIncorrect/commuteType/new_incorrect_dataset_32.csv"
+      logFile = "src/IncorrectFromModel/CommuteType/new_incorrect_dataset_30.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -41,22 +41,22 @@ object commuteType {
     }.map { case (a, b) => (a, b) }
       .filter(s => commuteType.failure(s._2))
 
-    types.reduceByKey((a, b) => a + b)
-      .collect()
-      .foreach(println)
+//    types.reduceByKey((a, b) => a + b)
+//      .collect()
+//      .foreach(println)
 
     types.collect.foreach(println)
     //types.saveAsTextFile("src/correctOutput/commuteType/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = types.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of the input")
-    linRdd.show.saveAsTextFile("src/measurement/CommuteType/dataset_32")
+//    //data lineage
+//    var linRdd = types.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of the input")
+//    linRdd.show.saveAsTextFile("src/measurement/CommuteType/dataset_32")
 
     sc.stop()
   }

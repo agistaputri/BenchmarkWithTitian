@@ -10,7 +10,7 @@ object commuteTypeFull {
     var logFile2 = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
       logFile1 = "src/resources/dataCommuteTypeFull/trips"
-      logFile2 = "src/resources/dataCommuteTypeFull/locations"
+      logFile2 = "src/IncorrectFromModel/Customers/new_incorrect_dataset_11.csv"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -58,18 +58,18 @@ object commuteTypeFull {
 //      .reduceByKey(add)
 
     locations.collect().foreach(println)
-    locations.saveAsTextFile("src/output/commuteTypeFull/programOutput")
+    //locations.saveAsTextFile("src/output/commuteTypeFull/programOutput")
 
     lc.setCaptureLineage(false)
 
-    //data lineage
-    var linRdd = locations.getLineage()
-
-    //track all wrong input
-    linRdd = linRdd.goBackAll()
-    println("This is lineage of the input")
-    linRdd.show
-      .saveAsTextFile("src/output/commuteTypeFull/titianOutput")
+//    //data lineage
+//    var linRdd = locations.getLineage()
+//
+//    //track all wrong input
+//    linRdd = linRdd.goBackAll()
+//    println("This is lineage of the input")
+//    linRdd.show
+//      .saveAsTextFile("src/output/commuteTypeFull/titianOutput")
 
     sc.stop()
   }
