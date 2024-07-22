@@ -38,14 +38,19 @@ object ageAnalysis {
       SparkContext.getOrCreate(sparkConf).parallelize(Seq[Int](), partitions).mapPartitions { _ =>
         (1 to dataper).map { _ =>
           // 90001,28,10990
-          def zipcode: String = "9" + "0" + "0" + Random.nextInt(10).toString + Random.nextInt(10).toString
+          //def zipcode: String = "9" + "0" + "0" + Random.nextInt(10).toString + Random.nextInt(10).toString
+
+          def zipcode: String = {
+            if (Random.nextBoolean()) "null"
+            else "900" + Random.nextInt(10).toString + Random.nextInt(10).toString
+          }
 
           val zip = zipcode
           val age = randIntBetween(0, 1000)
           val r = Random.nextInt(10000)
           s"""$zip,$age,$r"""
         }.iterator
-      }.saveAsTextFile("src/resources/dataAgeAnalysis")
+      }.saveAsTextFile("src/resources/dataAgeAnalysisNew")
     }
   }
 }

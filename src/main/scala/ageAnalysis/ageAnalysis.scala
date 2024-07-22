@@ -8,7 +8,7 @@ object ageAnalysis {
     var lineage = true
     var logFile = "hdfs://scai01.cs.ucla.edu:9000/clash/datasets/WB/"
     if (args.size < 2) {
-      logFile = "src/IncorrectFromModel/AgeAnalysis/new_incorrect_dataset_47.csv"
+      logFile = "src/resources/dataAgeAnalysisNew"
       conf.setMaster("local[1]")
       lineage = true
     } else {
@@ -30,10 +30,12 @@ object ageAnalysis {
     val mapped = ages.map {
       cols => (cols(0), cols(1).toInt, cols(2).toInt)
     }
-    val filtered = mapped.filter { s =>
-      s._1 == "90024"
-    }
-    val mapped2 = filtered.filter(s => ageAnalysis.failure(s._2))
+
+//    val filtered = mapped.filter { s =>
+//      s._1 == "90024"
+//    }
+
+    val mapped2 = mapped.filter(s => ageAnalysis.failure(s._2, s._1))
     .map {
       s =>
         if (s._2 >= 40 & s._2 <= 65) {
@@ -56,18 +58,18 @@ object ageAnalysis {
     lc.setCaptureLineage(false)
 
     //data lineage
-//    var linRdd = mapped2.getLineage()
+    var linRdd = mapped2.getLineage()
 //
 //    //track all wrong input
-//    linRdd = linRdd.goBackAll()
-//    println("This is lineage of this mapped2")
-//    linRdd.show.saveAsTextFile("src/AgeAnalysis")
+    linRdd = linRdd.goBackAll()
+    println("This is lineage of this mapped2")
+    linRdd.show.saveAsTextFile("src/output/AgeAnalysis2Variable")
 
     sc.stop()
   }
 
-  def failure(age: Int): Boolean = {
-    age > 50
+  def failure(age: Int, zip: String): Boolean = {
+    zip == "null" || age > 50
   }
 
 }
